@@ -3,7 +3,7 @@ import "./App.css";
 import { Table } from 'antd';
 
 import L from 'leaflet';
-import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, useMap, Marker, Popup, useMapEvents } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css';
 
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -92,6 +92,31 @@ const columns = [
 const App = () => {
     const [selectedRow, setSelectedRow] = useState({});
 
+    function LocationMarker() {
+        const [position, setPosition] = useState(null)
+        const map = useMapEvents({
+            click() {
+                map.locate();
+            },
+            locationfound(e) {
+                console.log(e);
+                const latlng = {
+                    lat: selectedRow.StartLat,
+                    lng: selectedRow.StartLng
+                }
+                setPosition(latlng)
+                map.flyTo(latlng, map.getZoom())
+            },
+        })
+
+        return position === null ? null : (
+            <Marker position={position}>
+                <Popup>You are here</Popup>
+            </Marker>
+        )
+    }
+
+
 
     return (
         <div className="main_wrapper">
@@ -104,12 +129,12 @@ const App = () => {
                 onRow={(record) => ({
                     onClick: () => {
                         setSelectedRow(record);
-                        console.log(record);
+                        // console.log(record);
                     }
                 })}
             />
 
-            <MapContainer center={[59.84660399, 30.29496392]} zoom={12} scrollWheelZoom={true}>
+            <MapContainer center={[59.83567701, 30.21312]} zoom={12} scrollWheelZoom={true}>
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -118,19 +143,19 @@ const App = () => {
                     <React.Fragment>
                         <Marker position={[selectedRow.StartLat, selectedRow.StartLng]}>
                             <Popup>
-                                A pretty CSS3 popup. <br /> Easily customizable.
+                                Start Point
                             </Popup>
                         </Marker>
 
                         <Marker position={[selectedRow.EndLat, selectedRow.EndLng]}>
                             <Popup>
-                                A pretty CSS3 popup. <br /> Easily customizable.
+                                End Point
                             </Popup>
                         </Marker>
+
+                        <LocationMarker />
                     </React.Fragment>
-
                 }
-
             </MapContainer>
 
         </div >
