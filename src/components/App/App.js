@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import "./App.css";
 import { Table } from 'antd';
 
 import L from 'leaflet';
-import { MapContainer, TileLayer, useMap, Marker, Popup, useMapEvents } from 'react-leaflet'
+import PolylineUtil from 'polyline-encoded';
+import { MapContainer, TileLayer, useMap, Marker, Popup, useMapEvents, Polyline } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css';
 
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { initPoints } from '../../store/pointsSlice';
+
 
 let DefaultIcon = L.icon({
     iconUrl: icon,
@@ -90,36 +95,50 @@ const columns = [
     },
 ];
 const App = () => {
-    const [selectedRow, setSelectedRow] = useState({});
+    const dispatch = useDispatch();
+    const points = useSelector((state) => state.pointsReducer.pointsInfo);
 
-    function LocationMarker() {
-        const [position, setPosition] = useState(null)
-        const map = useMapEvents({
-            click() {
-                map.locate();
-            },
-            locationfound(e) {
-                console.log(e);
-                const latlng = {
-                    lat: selectedRow.StartLat,
-                    lng: selectedRow.StartLng
-                }
-                setPosition(latlng)
-                map.flyTo(latlng, map.getZoom())
-            },
-        })
+    // const map = new L.map('map')
 
-        return position === null ? null : (
-            <Marker position={position}>
-                <Popup>You are here</Popup>
-            </Marker>
-        )
+    const [road, setRoad] = useState([]);
+
+
+    // const polyline = L.Polyline.fromEncoded(encoded).addTo(map);
+
+    function CreatePoly() {
+        const encoded = "o|glJ{d|wDBSAYG_@M_@@WCMMc@QMQ?IQSi@MHI?KC_@bNIlDIfCAZC`A?RGnBAd@DV`@FTBF@n@Dd@DXD^DXCXCZKZO\\UVUX_@TWv@gAhAaBfCmD^i@~AyBzAuBRWZa@\\e@Xc@|B}Cl@}@xAqBbAuANSPU`AsAV[R[tAkB^i@f@s@RWn@}@X]b@k@p@_A~AuBr@_AfGaIl@w@vBqCrAgBfBuBt@}@RWfAoAjCcDhCiDfCiD~@{Ah@aAn@uAn@aBZ_AX}@r@sCTmAReAp@_ELmAPkCHeADeAFgBDgBBkB?mB?sF?iC?yAMc[AoAIcMGgMEkI?qAEsCAmCA{CA}E?{A?aB?a@G_AAmBEoGAeDCeIC}EAuCCyG?i@B_@Rc@b@eAl@sA\\u@xEsK\\w@Qi@Sc@k@{AsBsF[y@u@qBGMYs@kDZ[BEu@}@_PG{ASkE_@kJe@kLWcFGuAAOEw@KeBo@cKi@sISgDSeDCa@o@iJk@gJwAoUg@cIQcDSkDWsD[_EW}BKaAWmBe@aD_@yB]sBSsAaDeS}@kFQaAEYCKG]O{@e@qCSiAuFw\\u@qEOaA^_@Z]p@q@nBoBjBkBfDiD~BcC|@}@TULMDEJK\\[~@cAnAoAtByBRSLMHIRSXYxD}DNONOt@u@n@q@bAaATWpDsDbAcAZ]JIZ[d@g@NOPQdAeA`CcCHIdGgGBCjAmAbAcA\\a@EWE]U{BAOSoBEc@[aDw@yHgAaL?AGc@Go@AQGe@MsAMsAU_CWaCI}@_AqJs@eHIy@Km@G_@EWCQEWMu@SiAUsAST_B`BEWAIESSOIa@";
+        const polyline = PolylineUtil.decode(encoded);
+        setRoad(polyline);
     }
 
 
+    // function LocationMarker() {
+
+    //     const map = useMapEvents({
+    //         click() {
+    //             map.locate();
+    //         },
+    //         locationfound(e) {
+    //             console.log(e);
+    //             const latlng = {
+    //                 lat: points.StartLat,
+    //                 lng: points.StartLng
+    //             }
+
+    //             map.flyTo(latlng, map.getZoom())
+    //         },
+    //     })
+
+    //     return position === null ? null : (
+    //         <Marker position={points}>
+    //             <Popup>You are here</Popup>
+    //         </Marker>
+    //     )
+    // }
 
     return (
         <div className="main_wrapper">
+
             <Table
                 className="Table"
                 dataSource={dataSource}
@@ -128,33 +147,36 @@ const App = () => {
                 pagination={false}
                 onRow={(record) => ({
                     onClick: () => {
-                        setSelectedRow(record);
-                        // console.log(record);
+                        CreatePoly();
+                        dispatch(initPoints(record))
                     }
                 })}
             />
+
 
             <MapContainer center={[59.83567701, 30.21312]} zoom={12} scrollWheelZoom={true}>
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                {Object.keys(selectedRow).length !== 0 &&
+                {Object.keys(points).length !== 0 &&
                     <React.Fragment>
-                        <Marker position={[selectedRow.StartLat, selectedRow.StartLng]}>
+                        <Marker position={[points.StartLat, points.StartLng]}>
                             <Popup>
                                 Start Point
                             </Popup>
                         </Marker>
 
-                        <Marker position={[selectedRow.EndLat, selectedRow.EndLng]}>
+                        <Marker position={[points.EndLat, points.EndLng]}>
                             <Popup>
                                 End Point
                             </Popup>
                         </Marker>
+                        <Polyline pathOptions={{ color: "purple" }} positions={road} />
 
-                        <LocationMarker />
+                        {/* <LocationMarker /> */}
                     </React.Fragment>
+
                 }
             </MapContainer>
 
