@@ -3,12 +3,21 @@
     height: 100vh;
     display: flex;
 
-    background-color: rgb(18, 27, 24);
+    background-color: rgb(11, 15, 14);
     margin: 0 auto;
     padding: 20px 20px;
-    justify-content: space-between;
-    gap: 120px;
+
+    gap: 100px;
     color: white;
+
+    flex-direction: column;
+    text-align: center;
+}
+
+.wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 120px;
 }
 
 tr:active {
@@ -24,6 +33,14 @@ tr:active {
 }
 
 .leaflet-container {
+    border: 1px solid white;
+    border-radius: 20px;
     width: 100%;
+    max-width: 900px;
     height: 600px;
+}
+
+h1 {
+    font-size: 24px;
+    color: rgb(133, 138, 130);
 }

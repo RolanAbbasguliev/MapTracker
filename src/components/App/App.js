@@ -71,45 +71,52 @@ const App = () => {
     return (
         <div className="main_wrapper">
 
-            <Table
-                className="Table"
-                dataSource={tableData.datasource}
-                columns={tableData.columns}
-                rowSelection={false}
-                pagination={false}
-                onRow={(record) => ({
-                    onClick: () => {
-                        dispatch(initPoints(record));
-                        dispatch({ type: travelSagaAction.FETCH_DATA_SAGA });
-                    }
-                })}
-            />
+            <h1>@Rolan Abbasguliev</h1>
 
-            <MapContainer center={[59.83567701, 30.21312]} zoom={12} scrollWheelZoom={true}>
-                <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+
+
+            <div className="wrapper">
+                <Table
+                    className="Table"
+                    dataSource={tableData.datasource}
+                    columns={tableData.columns}
+                    rowSelection={false}
+                    pagination={false}
+                    onRow={(record) => ({
+                        onClick: () => {
+                            dispatch(initPoints(record));
+                            dispatch({ type: travelSagaAction.FETCH_DATA_SAGA });
+                        }
+                    })}
                 />
-                {Object.keys(pointsInfo).length !== 0 &&
-                    <React.Fragment>
-                        <Marker position={[pointsInfo.StartLat, pointsInfo.StartLng]}>
-                            <Popup>
-                                Start Point
-                            </Popup>
-                        </Marker>
 
-                        <Marker position={[pointsInfo.EndLat, pointsInfo.EndLng]}>
-                            <Popup>
-                                End Point
-                            </Popup>
-                        </Marker>
-                        <Polyline pathOptions={{ color: "purple" }} positions={roadArr} />
+                <MapContainer center={[59.83567701, 30.21312]} zoom={12} scrollWheelZoom={true}>
+                    <TileLayer
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
+                    {Object.keys(pointsInfo).length !== 0 &&
+                        <React.Fragment>
+                            <Marker position={[pointsInfo.StartLat, pointsInfo.StartLng]}>
+                                <Popup>
+                                    Start Point
+                                </Popup>
+                            </Marker>
 
-                        <RecenterAutomatically lat={pointsInfo.StartLat} lng={pointsInfo.StartLng} />
-                    </React.Fragment>
+                            <Marker position={[pointsInfo.EndLat, pointsInfo.EndLng]}>
+                                <Popup>
+                                    End Point
+                                </Popup>
+                            </Marker>
+                            <Polyline pathOptions={{ color: "purple" }} positions={roadArr} />
 
-                }
-            </MapContainer>
+                            <RecenterAutomatically lat={pointsInfo.StartLat} lng={pointsInfo.StartLng} />
+                        </React.Fragment>
+
+                    }
+                </MapContainer>
+
+            </div>
 
         </div >
     );
