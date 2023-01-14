@@ -1,1 +1,0 @@
-export const getPointsInfo = (state) => state.pointsInfo;

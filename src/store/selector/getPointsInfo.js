@@ -1,0 +1,1 @@
+export const getPointsInfo = (state) => state.travelReducer.pointsInfo;

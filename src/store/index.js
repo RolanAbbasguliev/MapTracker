@@ -1,20 +1,19 @@
-import { applyMiddleware, configureStore } from "@reduxjs/toolkit";
+import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import createSagaMiddleware from "redux-saga";
 import travelReducer from "./reducers/travelSlice";
-import { rootWatcher } from "./sagas"
-import { fetchPointsAction } from "./sagas/actions/fetchPointsAction";
+import travelSaga from "./saga/travelSaga";
+
 
 let sagaMiddleware = createSagaMiddleware();
 
+const middleware = [...getDefaultMiddleware({ thunk: false }), sagaMiddleware];
 
 export default configureStore({
     reducer: {
         travelReducer
     },
-    middleware: getDefaultMiddleware =>
-        getDefaultMiddleware({
-            thunk: false,
-        }).concat(sagaMiddleware),
+    middleware
 })
 
-sagaMiddleware.run(rootWatcher);
+sagaMiddleware.run(travelSaga);
+

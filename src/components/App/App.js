@@ -3,7 +3,6 @@ import "./App.css";
 import { Table } from 'antd';
 
 import L from 'leaflet';
-import PolylineUtil from 'polyline-encoded';
 import { MapContainer, TileLayer, useMap, Marker, Popup, useMapEvents, Polyline } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css';
 
@@ -11,7 +10,11 @@ import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { initPoints } from '../../store/reducers/travelSlice';
+import { initPoints, initPolyline, initRoadArr } from '../../store/reducers/travelSlice';
+import { travelSagaAction } from '../../store/saga/actions/travelSagaAction';
+import { LeafletTrackingMarker } from "react-leaflet-tracking-marker";
+import AirplaneMarker from '../AirplaneMarker/AirplaneMarker';
+
 
 
 let DefaultIcon = L.icon({
@@ -94,52 +97,18 @@ const columns = [
         key: 'EndLng',
     },
 ];
+const RecenterAutomatically = ({ lat, lng }) => {
+    const map = useMap();
+    useEffect(() => {
+        map.setView([lat, lng]);
+    },);
+    return null;
+}
+
 const App = () => {
     const dispatch = useDispatch();
-    const points = useSelector((state) => state.travelReducer.pointsInfo);
-
-    // const map = new L.map('map')
-
-
-
-
-    // const polyline = L.Polyline.fromEncoded(encoded).addTo(map);
-
-    // function CreatePoly() {
-    //     const encoded = "o|glJ{d|wDBSAYG_@M_@@WCMMc@QMQ?IQSi@MHI?KC_@bNIlDIfCAZC`A?RGnBAd@DV`@FTBF@n@Dd@DXD^DXCXCZKZO\\UVUX_@TWv@gAhAaBfCmD^i@~AyBzAuBRWZa@\\e@Xc@|B}Cl@}@xAqBbAuANSPU`AsAV[R[tAkB^i@f@s@RWn@}@X]b@k@p@_A~AuBr@_AfGaIl@w@vBqCrAgBfBuBt@}@RWfAoAjCcDhCiDfCiD~@{Ah@aAn@uAn@aBZ_AX}@r@sCTmAReAp@_ELmAPkCHeADeAFgBDgBBkB?mB?sF?iC?yAMc[AoAIcMGgMEkI?qAEsCAmCA{CA}E?{A?aB?a@G_AAmBEoGAeDCeIC}EAuCCyG?i@B_@Rc@b@eAl@sA\\u@xEsK\\w@Qi@Sc@k@{AsBsF[y@u@qBGMYs@kDZ[BEu@}@_PG{ASkE_@kJe@kLWcFGuAAOEw@KeBo@cKi@sISgDSeDCa@o@iJk@gJwAoUg@cIQcDSkDWsD[_EW}BKaAWmBe@aD_@yB]sBSsAaDeS}@kFQaAEYCKG]O{@e@qCSiAuFw\\u@qEOaA^_@Z]p@q@nBoBjBkBfDiD~BcC|@}@TULMDEJK\\[~@cAnAoAtByBRSLMHIRSXYxD}DNONOt@u@n@q@bAaATWpDsDbAcAZ]JIZ[d@g@NOPQdAeA`CcCHIdGgGBCjAmAbAcA\\a@EWE]U{BAOSoBEc@[aDw@yHgAaL?AGc@Go@AQGe@MsAMsAU_CWaCI}@_AqJs@eHIy@Km@G_@EWCQEWMu@SiAUsAST_B`BEWAIESSOIa@";
-    //     const polyline = PolylineUtil.decode(encoded);
-    //     setRoad(polyline);
-    // }
-
-
-    // function LocationMarker() {
-
-    //     const map = useMapEvents({
-    //         click() {
-    //             map.locate();
-    //         },
-    //         locationfound(e) {
-    //             console.log(e);
-    //             const latlng = {
-    //                 lat: points.StartLat,
-    //                 lng: points.StartLng
-    //             }
-
-    //             map.flyTo(latlng, map.getZoom())
-    //         },
-    //     })
-
-    //     return position === null ? null : (
-    //         <Marker position={points}>
-    //             <Popup>You are here</Popup>
-    //         </Marker>
-    //     )
-    // }
-
-    function initTravel(record) {
-        dispatch(initPoints(record));
-        // dispatch(initTravel(record));
-    }
+    const pointsInfo = useSelector((state) => state.travelReducer.pointsInfo);
+    const roadArr = useSelector((state) => state.travelReducer.roadArr);
 
     return (
         <div className="main_wrapper">
@@ -152,34 +121,33 @@ const App = () => {
                 pagination={false}
                 onRow={(record) => ({
                     onClick: () => {
-                        initTravel(record);
+                        dispatch(initPoints(record));
+                        dispatch({ type: travelSagaAction.FETCH_DATA_SAGA });
                     }
                 })}
             />
-            <button onClick={() => dispatch(initTravel(points))}>CALL</button>
-
 
             <MapContainer center={[59.83567701, 30.21312]} zoom={12} scrollWheelZoom={true}>
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                {Object.keys(points).length !== 0 &&
+                {Object.keys(pointsInfo).length !== 0 &&
                     <React.Fragment>
-                        <Marker position={[points.StartLat, points.StartLng]}>
+                        <Marker position={[pointsInfo.StartLat, pointsInfo.StartLng]}>
                             <Popup>
                                 Start Point
                             </Popup>
                         </Marker>
 
-                        <Marker position={[points.EndLat, points.EndLng]}>
+                        <Marker position={[pointsInfo.EndLat, pointsInfo.EndLng]}>
                             <Popup>
                                 End Point
                             </Popup>
                         </Marker>
-                        {/* <Polyline pathOptions={{ color: "purple" }} positions={road} /> */}
-
-                        {/* <LocationMarker /> */}
+                        <Polyline pathOptions={{ color: "purple" }} positions={roadArr} />
+                        <AirplaneMarker data={roadArr ?? {}} />
+                        <RecenterAutomatically lat={pointsInfo.StartLat} lng={pointsInfo.StartLng} />
                     </React.Fragment>
 
                 }
