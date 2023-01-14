@@ -11,7 +11,7 @@ import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { initPoints } from '../../store/pointsSlice';
+import { initPoints } from '../../store/reducers/travelSlice';
 
 
 let DefaultIcon = L.icon({
@@ -96,20 +96,20 @@ const columns = [
 ];
 const App = () => {
     const dispatch = useDispatch();
-    const points = useSelector((state) => state.pointsReducer.pointsInfo);
+    const points = useSelector((state) => state.travelReducer.pointsInfo);
 
     // const map = new L.map('map')
 
-    const [road, setRoad] = useState([]);
+
 
 
     // const polyline = L.Polyline.fromEncoded(encoded).addTo(map);
 
-    function CreatePoly() {
-        const encoded = "o|glJ{d|wDBSAYG_@M_@@WCMMc@QMQ?IQSi@MHI?KC_@bNIlDIfCAZC`A?RGnBAd@DV`@FTBF@n@Dd@DXD^DXCXCZKZO\\UVUX_@TWv@gAhAaBfCmD^i@~AyBzAuBRWZa@\\e@Xc@|B}Cl@}@xAqBbAuANSPU`AsAV[R[tAkB^i@f@s@RWn@}@X]b@k@p@_A~AuBr@_AfGaIl@w@vBqCrAgBfBuBt@}@RWfAoAjCcDhCiDfCiD~@{Ah@aAn@uAn@aBZ_AX}@r@sCTmAReAp@_ELmAPkCHeADeAFgBDgBBkB?mB?sF?iC?yAMc[AoAIcMGgMEkI?qAEsCAmCA{CA}E?{A?aB?a@G_AAmBEoGAeDCeIC}EAuCCyG?i@B_@Rc@b@eAl@sA\\u@xEsK\\w@Qi@Sc@k@{AsBsF[y@u@qBGMYs@kDZ[BEu@}@_PG{ASkE_@kJe@kLWcFGuAAOEw@KeBo@cKi@sISgDSeDCa@o@iJk@gJwAoUg@cIQcDSkDWsD[_EW}BKaAWmBe@aD_@yB]sBSsAaDeS}@kFQaAEYCKG]O{@e@qCSiAuFw\\u@qEOaA^_@Z]p@q@nBoBjBkBfDiD~BcC|@}@TULMDEJK\\[~@cAnAoAtByBRSLMHIRSXYxD}DNONOt@u@n@q@bAaATWpDsDbAcAZ]JIZ[d@g@NOPQdAeA`CcCHIdGgGBCjAmAbAcA\\a@EWE]U{BAOSoBEc@[aDw@yHgAaL?AGc@Go@AQGe@MsAMsAU_CWaCI}@_AqJs@eHIy@Km@G_@EWCQEWMu@SiAUsAST_B`BEWAIESSOIa@";
-        const polyline = PolylineUtil.decode(encoded);
-        setRoad(polyline);
-    }
+    // function CreatePoly() {
+    //     const encoded = "o|glJ{d|wDBSAYG_@M_@@WCMMc@QMQ?IQSi@MHI?KC_@bNIlDIfCAZC`A?RGnBAd@DV`@FTBF@n@Dd@DXD^DXCXCZKZO\\UVUX_@TWv@gAhAaBfCmD^i@~AyBzAuBRWZa@\\e@Xc@|B}Cl@}@xAqBbAuANSPU`AsAV[R[tAkB^i@f@s@RWn@}@X]b@k@p@_A~AuBr@_AfGaIl@w@vBqCrAgBfBuBt@}@RWfAoAjCcDhCiDfCiD~@{Ah@aAn@uAn@aBZ_AX}@r@sCTmAReAp@_ELmAPkCHeADeAFgBDgBBkB?mB?sF?iC?yAMc[AoAIcMGgMEkI?qAEsCAmCA{CA}E?{A?aB?a@G_AAmBEoGAeDCeIC}EAuCCyG?i@B_@Rc@b@eAl@sA\\u@xEsK\\w@Qi@Sc@k@{AsBsF[y@u@qBGMYs@kDZ[BEu@}@_PG{ASkE_@kJe@kLWcFGuAAOEw@KeBo@cKi@sISgDSeDCa@o@iJk@gJwAoUg@cIQcDSkDWsD[_EW}BKaAWmBe@aD_@yB]sBSsAaDeS}@kFQaAEYCKG]O{@e@qCSiAuFw\\u@qEOaA^_@Z]p@q@nBoBjBkBfDiD~BcC|@}@TULMDEJK\\[~@cAnAoAtByBRSLMHIRSXYxD}DNONOt@u@n@q@bAaATWpDsDbAcAZ]JIZ[d@g@NOPQdAeA`CcCHIdGgGBCjAmAbAcA\\a@EWE]U{BAOSoBEc@[aDw@yHgAaL?AGc@Go@AQGe@MsAMsAU_CWaCI}@_AqJs@eHIy@Km@G_@EWCQEWMu@SiAUsAST_B`BEWAIESSOIa@";
+    //     const polyline = PolylineUtil.decode(encoded);
+    //     setRoad(polyline);
+    // }
 
 
     // function LocationMarker() {
@@ -136,6 +136,11 @@ const App = () => {
     //     )
     // }
 
+    function initTravel(record) {
+        dispatch(initPoints(record));
+        // dispatch(initTravel(record));
+    }
+
     return (
         <div className="main_wrapper">
 
@@ -147,11 +152,11 @@ const App = () => {
                 pagination={false}
                 onRow={(record) => ({
                     onClick: () => {
-                        CreatePoly();
-                        dispatch(initPoints(record))
+                        initTravel(record);
                     }
                 })}
             />
+            <button onClick={() => dispatch(initTravel(points))}>CALL</button>
 
 
             <MapContainer center={[59.83567701, 30.21312]} zoom={12} scrollWheelZoom={true}>
@@ -172,7 +177,7 @@ const App = () => {
                                 End Point
                             </Popup>
                         </Marker>
-                        <Polyline pathOptions={{ color: "purple" }} positions={road} />
+                        {/* <Polyline pathOptions={{ color: "purple" }} positions={road} /> */}
 
                         {/* <LocationMarker /> */}
                     </React.Fragment>
