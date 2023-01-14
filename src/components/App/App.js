@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { initPoints, initPolyline, initRoadArr } from '../../store/reducers/travelSlice';
 import { travelSagaAction } from '../../store/saga/actions/travelSagaAction';
 import { LeafletTrackingMarker } from "react-leaflet-tracking-marker";
-import AirplaneMarker from '../AirplaneMarker/AirplaneMarker';
+
 
 
 
@@ -146,7 +146,7 @@ const App = () => {
                             </Popup>
                         </Marker>
                         <Polyline pathOptions={{ color: "purple" }} positions={roadArr} />
-                        <AirplaneMarker data={roadArr ?? {}} />
+
                         <RecenterAutomatically lat={pointsInfo.StartLat} lng={pointsInfo.StartLng} />
                     </React.Fragment>
 
