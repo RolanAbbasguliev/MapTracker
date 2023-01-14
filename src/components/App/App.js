@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import "./App.css";
 import { Table } from 'antd';
 
-import L from 'leaflet';
+import L, { point } from 'leaflet';
 import { MapContainer, TileLayer, useMap, Marker, Popup, useMapEvents } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css';
 
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { initPoints } from '../../store/pointsSlice';
+
 
 let DefaultIcon = L.icon({
     iconUrl: icon,
@@ -90,36 +94,37 @@ const columns = [
     },
 ];
 const App = () => {
-    const [selectedRow, setSelectedRow] = useState({});
-
-    function LocationMarker() {
-        const [position, setPosition] = useState(null)
-        const map = useMapEvents({
-            click() {
-                map.locate();
-            },
-            locationfound(e) {
-                console.log(e);
-                const latlng = {
-                    lat: selectedRow.StartLat,
-                    lng: selectedRow.StartLng
-                }
-                setPosition(latlng)
-                map.flyTo(latlng, map.getZoom())
-            },
-        })
-
-        return position === null ? null : (
-            <Marker position={position}>
-                <Popup>You are here</Popup>
-            </Marker>
-        )
-    }
+    const dispatch = useDispatch();
+    const points = useSelector((state) => state.pointsReducer.pointsInfo);
 
 
+    // function LocationMarker() {
+
+    //     const map = useMapEvents({
+    //         click() {
+    //             map.locate();
+    //         },
+    //         locationfound(e) {
+    //             console.log(e);
+    //             const latlng = {
+    //                 lat: points.StartLat,
+    //                 lng: points.StartLng
+    //             }
+
+    //             map.flyTo(latlng, map.getZoom())
+    //         },
+    //     })
+
+    //     return position === null ? null : (
+    //         <Marker position={points}>
+    //             <Popup>You are here</Popup>
+    //         </Marker>
+    //     )
+    // }
 
     return (
         <div className="main_wrapper">
+
             <Table
                 className="Table"
                 dataSource={dataSource}
@@ -127,33 +132,31 @@ const App = () => {
                 rowSelection={false}
                 pagination={false}
                 onRow={(record) => ({
-                    onClick: () => {
-                        setSelectedRow(record);
-                        // console.log(record);
-                    }
+                    onClick: () => dispatch(initPoints(record))
                 })}
             />
+
 
             <MapContainer center={[59.83567701, 30.21312]} zoom={12} scrollWheelZoom={true}>
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                {Object.keys(selectedRow).length !== 0 &&
+                {Object.keys(points).length !== 0 &&
                     <React.Fragment>
-                        <Marker position={[selectedRow.StartLat, selectedRow.StartLng]}>
+                        <Marker position={[points.StartLat, points.StartLng]}>
                             <Popup>
                                 Start Point
                             </Popup>
                         </Marker>
 
-                        <Marker position={[selectedRow.EndLat, selectedRow.EndLng]}>
+                        <Marker position={[points.EndLat, points.EndLng]}>
                             <Popup>
                                 End Point
                             </Popup>
                         </Marker>
 
-                        <LocationMarker />
+                        {/* <LocationMarker /> */}
                     </React.Fragment>
                 }
             </MapContainer>
