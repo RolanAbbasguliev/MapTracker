@@ -26,35 +26,6 @@ let DefaultIcon = L.icon({
 L.Marker.prototype.options.icon = DefaultIcon;
 
 
-// const dataSource = 
-
-// const columns = [
-//     {
-//         title: 'Номер Заявки',
-//         dataIndex: 'num',
-//         key: 'num',
-//     },
-//     {
-//         title: 'Координаты ОТ lat',
-//         dataIndex: 'StartLat',
-//         key: 'StartLat',
-//     },
-//     {
-//         title: 'Координаты ОТ lng',
-//         dataIndex: 'StartLng',
-//         key: 'StartLng',
-//     },
-//     {
-//         title: 'Координаты ОТ lat',
-//         dataIndex: 'EndLat',
-//         key: 'EndLat',
-//     },
-//     {
-//         title: 'Координаты ОТ lng',
-//         dataIndex: 'EndLng',
-//         key: 'EndLng',
-//     },
-// ];
 const RecenterAutomatically = ({ lat, lng }) => {
     const map = useMap();
     useEffect(() => {
@@ -68,13 +39,13 @@ const App = () => {
     const pointsInfo = useSelector((state) => state.travelReducer.pointsInfo);
     const roadArr = useSelector((state) => state.travelReducer.roadArr);
 
+
+
+
     return (
         <div className="main_wrapper">
 
             <h1>@Rolan Abbasguliev</h1>
-
-
-
             <div className="wrapper">
                 <Table
                     className="Table"
