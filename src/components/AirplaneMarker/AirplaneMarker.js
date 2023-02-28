@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { LeafletTrackingMarker } from "react-leaflet-tracking-marker";
 import L, { Popup } from "leaflet";
 
-import airplaneIcon from "../AirplaneMarker/AirplaneMarker";
+// import airplaneIcon from "../AirplaneMarker/AirplaneMarker";
 
 const icon = L.icon({
     iconSize: [45, 45],
