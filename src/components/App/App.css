@@ -1,52 +1,53 @@
 .main_wrapper {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
 
-    background-color: rgb(11, 15, 14);
-    margin: 0 auto;
-    padding: 20px 20px;
+  background-color: rgb(11, 15, 14);
+  margin: 0 auto;
+  padding: 20px 20px;
 
-    gap: 100px;
-    color: white;
+  gap: 100px;
+  color: white;
 
-    flex-direction: column;
-    text-align: center;
+  flex-direction: column;
+  text-align: center;
+  overflow: hidden;
 }
 
 .wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  gap: 100px;
 }
 
 tr:active {
-    background: #4b64d39a !important;
+  background: #4b64d39a !important;
 }
 
 .ant-table-tbody > tr.ant-table-row:hover > td {
-    background: none !important;
+  background: none !important;
 }
 
 .ant-table {
-    max-width: 670px;
+  max-width: 670px;
 }
 
 .ant-table table {
-    font-size: 16px;
+  font-size: 16px;
 }
 
 .leaflet-container {
-    border: 1px solid white;
-    border-radius: 20px;
-    width: 100%;
-    max-width: 900px;
-    height: 600px;
+  border: 1px solid white;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 900px;
+  height: 500px;
 }
 
 h1 {
-    
-    font-size: 24px;
-    color: #edff46;
+  font-size: 24px;
+  color: #edff46;
 }
